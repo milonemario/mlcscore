@@ -44,9 +44,14 @@
       <p>Select a CSV file containing the following variables:<p>
         <p>[Note: For nw, open thefile data_kw_small.csv or data_kw.csv]</p>
         <ul>
-          <li>'size': ...</li>
-          <li>'mb': ...</li>
-          <li>'flev': ...</li>
+          <li>Size: Natural logarithm of the market value of equity corrected for inflation. <li>
+          <li>Market to book ratio: Ratio of market value of equity to book value of equity.</li>
+          <li>Financial leverage: Long-term debt plus short term debt deflated by market value of equity.</li>
+          <li>Non-Operating Accruals scaled by lagged assets.</li>
+          <li>Cash Flow from operating activities scaled by lagged assets.</li>
+          <li>Investment Cycle: Depreciation expenses deflated by lagged assets.</li>
+          <li>Age of the firm in years: Number of years with return history on CRSP or number of years in Compustat if not available.</li>
+          <li>Volatility: Standard deviation of daily returns over the past year.</li>
         </ul>
 
       <input type="file" id="file-input" />
@@ -130,7 +135,7 @@
       <br>
       -->
 
-      <button v-on:click="computeScore">Compute C Score new</button>
+      <button v-on:click="computeScore">Compute C Score</button>
 
       <br>
       <p>{{ message_cscore }}</p
