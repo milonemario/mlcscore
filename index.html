@@ -122,11 +122,14 @@
 
 
       <br>
+      <!--
       <p>For debug purposes: select the model (json) and weights.</p>
       <p>[Note: In the final version, these will be loaded automatically]</p>
       <p>Model [file 'model.json']: <input type="file" id="file-json" /></p>
       <p>Weights [file 'group1-shared1of1.bin']: <input type="file" id="file-weights" /></p>
       <br>
+      -->
+
       <button v-on:click="computeScore">Compute C Score</button>
 
       <br>
@@ -216,9 +219,10 @@
 
             // Open the model
             this.message = 'Open Model ...';
-            json = document.getElementById('file-json').files[0];
-            weights = document.getElementById('file-weights').files[0];
-            model = await tf.loadLayersModel(tf.io.browserFiles([json, weights]));
+            //json = document.getElementById('file-json').files[0];
+            //weights = document.getElementById('file-weights').files[0];
+            //model = await tf.loadLayersModel(tf.io.browserFiles([json, weights]));
+            model = await tf.loadLayersModel(['https://www.mariomilone.org/mlcscore/webapp/nn_kw_js/model.json', 'https://www.mariomilone.org/mlcscore/webapp/nn_kw_js/group1-shard1of1.bin'])
 
             this.message_cscore = 'Compute C score ...';
             y = model.predict(X.tensor);
