@@ -130,7 +130,7 @@
       <br>
       -->
 
-      <button v-on:click="computeScore">Compute C Score</button>
+      <button v-on:click="computeScore">Compute C Score new</button>
 
       <br>
       <p>{{ message_cscore }}</p
@@ -222,7 +222,7 @@
             //json = document.getElementById('file-json').files[0];
             //weights = document.getElementById('file-weights').files[0];
             //model = await tf.loadLayersModel(tf.io.browserFiles([json, weights]));
-            model = await tf.loadLayersModel(['https://www.mariomilone.org/mlcscore/webapp/nn_kw_js/model.json', 'https://www.mariomilone.org/mlcscore/webapp/nn_kw_js/group1-shard1of1.bin'])
+            model = await tf.loadLayersModel('https://www.mariomilone.org/mlcscore/webapp/nn_kw_js/model.json')
 
             this.message_cscore = 'Compute C score ...';
             y = model.predict(X.tensor);
