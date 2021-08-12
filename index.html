@@ -2,16 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="basic.css">
     <title>Using Machine Learning to Measure Conservatism</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
     <script src="https://gmousse.github.io/dataframe-js/dist/dataframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/danfojs@0.2.7/lib/bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.7.0/dist/tf.min.js"></script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    });
+    </script>
+
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML">
+    </script>
 
   </head>
   <body>
     <div id="app">
-      <h1>Using Machine Leaning to Measure Conservatism</h1>
+      <h1>Using Machine Learning to Measure Conservatism</h1>
+      <h2>Download or compute conservatism score</h2>
 
       <h2>Download Conservatism Score</h2>
 
@@ -19,7 +30,7 @@
       <a href="data/cscores_07-06-2021.parquet"><button>Download Parquet</button></a>
 
       <h2>Compute the C score</h2>
-      We propose several ways to compute the C score for your research projects.
+      <p>We propose several ways to compute the C score for your research projects.</p>
 
       <h3>Packages</h3>
       <p>Python ad R packages coming soon.</p>
@@ -41,89 +52,179 @@
       in the size of the file that it accepts. We suggest that you only provide
       a file with the columns necessary to compute the C score.</p>
 
-      <p>Select a CSV file containing the following variables:<p>
-        <ul>
-          <li>Identifiers: Typically gvkey/permno and fiscal year.</li>
-          <li>Size: Natural logarithm of the market value of equity corrected for inflation.</li>
-          <li>Market to book ratio: Ratio of market value of equity to book value of equity.</li>
-          <li>Financial leverage: Long-term debt plus short term debt deflated by market value of equity.</li>
-          <li>Non-Operating Accruals scaled by lagged assets.</li>
-          <li>Cash Flow from operating activities scaled by lagged assets.</li>
-          <li>Investment Cycle: Depreciation expenses deflated by lagged assets.</li>
-          <li>Age of the firm in years: Number of years with return history on CRSP or number of years in Compustat if not available.</li>
-          <li>Volatility: Standard deviation of daily returns over the past year.</li>
-        </ul>
+      <p>Select a CSV file containing the following variables (formulas uses COMPUSTAT and CRSP variables names):<p>
 
-      <input type="file" id="file-input" />
+      <input type="file" id="file-input" >
       <button v-on:click="openData">Open Data</button> {{message_data}}
+      
+      <br>
+      <br>
+
+      <table>
+        <tr>
+          <th>Variable</th>
+          <th>Description</th>
+          <th>Formula</th>
+        </tr>
+        <tr>
+          <td>Identifiers</td>
+          <td>Typically gvkey/permno and fiscal year.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Size</td>
+          <td>Natural logarithm of the market value of equity corrected for inflation.</td>
+          <td>$\log(\frac{prcc\_f \times csho}{gdpdef})$</td>
+        </tr>
+        <tr>
+          <td>M/B ratio</td>
+          <td>Ratio of market value of equity to book value of equity.</td>
+          <td>$\frac{prcc\_f \times csho}{ceq}$</td>
+        </tr>
+        <tr>
+          <td>Financial Leverage</td>
+          <td>Long-term debt plus short term debt deflated by market value of equity.</td>
+          <td>$\frac{dltt + dlc}{prcc\_f \times csho}$</td>
+        </tr>
+        <tr>
+          <td>Non-Operating Accruals</td>
+          <td>Non-Operating Accruals scaled by lagged assets.</td>
+          <td>$\frac{(ib+dp)-cfo-oacc}{at_{-1}}$</td>
+        </tr>
+        <tr>
+          <td>CFOA</td>
+          <td>Cash Flow from operating activities.</li></td>
+          <td>$\frac{oancf}{at_{-1}}$ if $fyear \ge 1987$, $\frac{fopt-oacc}{at_{-1}}$ if $fyear<1987$.</td>
+        </tr>
+        <tr>
+          <td>Investment Cycle</td>
+          <td>Depreciation expenses deflated by lagged assets.</td>
+          <td>Standard deviation of $\frac{capx}{at}$ over the past 5 years (3 years minimum).</td>
+        </tr>
+        <tr>
+          <td>Age</td>
+          <td>Age of the firm in years.</td>
+          <td>Number of years with return history on CRSP or number of years in Compustat if not available.</td>
+        </tr>
+        <tr>
+          <td>Volatility</td>
+          <td>Standard deviation of daily returns over the past year.</td>
+          <td>$std(ret_d)$ where $ret_d$ is the series of daily returns over the past 253 trading days.</td>
+        </tr>
+      </table>
+
 
       <br>
       Select column for:
-      <br>
-      Size:
-      <select v-model="selected_size">
-        <option v-for="col in columns" v-bind:value="col">
-          {{ col }}
-        </option>
-      </select>
-      <br>
-      M/B ratio:
-      <select v-model="selected_mb">
-        <option v-for="col in columns" v-bind:value="col">
-          {{ col }}
-        </option>
-      </select>
-      <br>
-      Leverage:
-      <select v-model="selected_lev">
-        <option v-for="col in columns" v-bind:value="col">
-          {{ col }}
-        </option>
-      </select>
-      <br>
-      Non-Operating Accruals:
-      <select v-model="selected_noacc">
-        <option v-for="col in columns" v-bind:value="col">
-          {{ col }}
-        </option>
-      </select>
-      <br>
-      CF from Operating Activities:
-      <select v-model="selected_cfoa">
-        <option v-for="col in columns" v-bind:value="col">
-          {{ col }}
-        </option>
-      </select>
-      <br>
-      Investment Cycle:
-      <select v-model="selected_invcycle">
-        <option v-for="col in columns" v-bind:value="col">
-          {{ col }}
-        </option>
-      </select>
-      <br>
-      Age:
-      <select v-model="selected_age">
-        <option v-for="col in columns" v-bind:value="col">
-          {{ col }}
-        </option>
-      </select>
-      <br>
-      Volatility:
-      <select v-model="selected_volat">
-        <option v-for="col in columns" v-bind:value="col">
-          {{ col }}
-        </option>
-      </select>
-      <br>
-      Select the columns used as identifiers:
-      <br>
-      <select v-model="selected_id" multiple>
-        <option v-for="col in columns" v-bind:value="col">
-          {{ col }}
-        </option>
-      </select>
 
+
+      <table>
+        <tr>
+          <th>Variable</th>
+          <th></th>
+          <th>Note</th>
+        </tr>
+        <tr>
+          <td>Identifiers</td>
+          <td>
+            <select v-model="selected_id" multiple>
+              <option v-for="col in columns" v-bind:value="col">
+                {{ col }}
+              </option>
+            </select>
+          </td>
+          <td>Use 'Ctrl' to select multiple identifiers.</td>
+        </tr>
+
+        <tr>
+          <td>Size</td>
+          <td>
+            <select v-model="selected_size">
+              <option v-for="col in columns" v-bind:value="col">
+                {{ col }}
+              </option>
+            </select>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>M/B ratio</td>
+          <td>
+            <select v-model="selected_mb">
+              <option v-for="col in columns" v-bind:value="col">
+                {{ col }}
+              </option>
+            </select>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Financial Leverage</td>
+          <td>
+            <select v-model="selected_lev">
+              <option v-for="col in columns" v-bind:value="col">
+                {{ col }}
+              </option>
+            </select>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Non-Operating Accruals</td>
+          <td>
+            <select v-model="selected_noacc">
+              <option v-for="col in columns" v-bind:value="col">
+                {{ col }}
+              </option>
+            </select>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>CFOA</td>
+          <td>
+            <select v-model="selected_cfoa">
+              <option v-for="col in columns" v-bind:value="col">
+                {{ col }}
+              </option>
+            </select>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Investment Cycle</td>
+          <td>
+            <select v-model="selected_invcycle">
+              <option v-for="col in columns" v-bind:value="col">
+                {{ col }}
+              </option>
+            </select>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Age</td>
+          <td>
+            <select v-model="selected_age">
+              <option v-for="col in columns" v-bind:value="col">
+                {{ col }}
+              </option>
+            </select>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Volatility</td>
+          <td>
+            <select v-model="selected_volat">
+              <option v-for="col in columns" v-bind:value="col">
+                {{ col }}
+              </option>
+            </select>
+          </td>
+          <td></td>
+        </tr>
+      </table>
 
 
       <br>
@@ -144,8 +245,9 @@
       <br>
       <button v-on:click="downloadScore">Download C Score</button>
 
-      <h2>Neural Network model (TensorFlow)</h2>
+      <h2>Download the model</h2>
       You are welcome to download the tensor flow model used to compute the C score and use it at will.
+      Coming soon.
 
 
 
