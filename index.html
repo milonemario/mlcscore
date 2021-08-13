@@ -26,11 +26,19 @@
 
       <h2>Download Conservatism Score</h2>
 
-      <a href="data/cscores_07-06-2021.csv"><button>Download CSV</button></a>
-      <a href="data/cscores_07-06-2021.parquet"><button>Download Parquet</button></a>
+      Data is available in comma-separated (CSV), or parquet formats.
+
+      <br>
+      <br>
+      <br>
+
+      <a href="data/cscores_07-06-2021.csv"><button>Download in CSV format</button></a>
+      <br>
+      <br>
+      <a href="data/cscores_07-06-2021.parquet"><button>Download in Parquet format</button></a>
 
       <h2>Compute the C score</h2>
-      <p>We propose several ways to compute the C score for your research projects.</p>
+      <p>We offer several ways to compute the C score for your research projects.</p>
 
       <h3>Packages</h3>
       <p>Python ad R packages coming soon.</p>
@@ -52,77 +60,24 @@
       in the size of the file that it accepts. We suggest that you only provide
       a file with the columns necessary to compute the C score.</p>
 
-      <p>Select a CSV file containing the following variables (formulas uses COMPUSTAT and CRSP variables names):<p>
+      <p>Select a CSV file containing the variables detailed in the table below (formulas use COMPUSTAT and CRSP variables names):<p>
 
-      <input type="file" id="file-input" >
-      <button v-on:click="openData">Open Data</button> {{message_data}}
-      
-      <br>
-      <br>
-
-      <table>
-        <tr>
-          <th>Variable</th>
-          <th>Description</th>
-          <th>Formula</th>
-        </tr>
-        <tr>
-          <td>Identifiers</td>
-          <td>Typically gvkey/permno and fiscal year.</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Size</td>
-          <td>Natural logarithm of the market value of equity corrected for inflation.</td>
-          <td>$\log(\frac{prcc\_f \times csho}{gdpdef})$</td>
-        </tr>
-        <tr>
-          <td>M/B ratio</td>
-          <td>Ratio of market value of equity to book value of equity.</td>
-          <td>$\frac{prcc\_f \times csho}{ceq}$</td>
-        </tr>
-        <tr>
-          <td>Financial Leverage</td>
-          <td>Long-term debt plus short term debt deflated by market value of equity.</td>
-          <td>$\frac{dltt + dlc}{prcc\_f \times csho}$</td>
-        </tr>
-        <tr>
-          <td>Non-Operating Accruals</td>
-          <td>Non-Operating Accruals scaled by lagged assets.</td>
-          <td>$\frac{(ib+dp)-cfo-oacc}{at_{-1}}$</td>
-        </tr>
-        <tr>
-          <td>CFOA</td>
-          <td>Cash Flow from operating activities.</li></td>
-          <td>$\frac{oancf}{at_{-1}}$ if $fyear \ge 1987$, $\frac{fopt-oacc}{at_{-1}}$ if $fyear<1987$.</td>
-        </tr>
-        <tr>
-          <td>Investment Cycle</td>
-          <td>Depreciation expenses deflated by lagged assets.</td>
-          <td>Standard deviation of $\frac{capx}{at}$ over the past 5 years (3 years minimum).</td>
-        </tr>
-        <tr>
-          <td>Age</td>
-          <td>Age of the firm in years.</td>
-          <td>Number of years with return history on CRSP or number of years in Compustat if not available.</td>
-        </tr>
-        <tr>
-          <td>Volatility</td>
-          <td>Standard deviation of daily returns over the past year.</td>
-          <td>$std(ret_d)$ where $ret_d$ is the series of daily returns over the past 253 trading days.</td>
-        </tr>
-      </table>
-
+      <input type="file" id="file-input" v-on:change="openData" >
+      <!-- <button v-on:click="openData">Open Data</button> -->
+      {{message_data}}
 
       <br>
-      Select column for:
+      <br>
 
+      <p>Select columns for</p>
+      <br>
 
       <table>
         <tr>
           <th>Variable</th>
           <th></th>
-          <th>Note</th>
+          <th>Description</th>
+          <th>Formula / Note</th>
         </tr>
         <tr>
           <td>Identifiers</td>
@@ -133,9 +88,9 @@
               </option>
             </select>
           </td>
+          <td>Typically gvkey/permno and fiscal year.</td>
           <td>Use 'Ctrl' to select multiple identifiers.</td>
         </tr>
-
         <tr>
           <td>Size</td>
           <td>
@@ -145,7 +100,8 @@
               </option>
             </select>
           </td>
-          <td></td>
+          <td>Natural logarithm of the market value of equity corrected for inflation.</td>
+          <td>$\log(\frac{prcc\_f \times csho}{gdpdef})$</td>
         </tr>
         <tr>
           <td>M/B ratio</td>
@@ -156,7 +112,8 @@
               </option>
             </select>
           </td>
-          <td></td>
+          <td>Ratio of market value of equity to book value of equity.</td>
+          <td>$\frac{prcc\_f \times csho}{ceq}$</td>
         </tr>
         <tr>
           <td>Financial Leverage</td>
@@ -167,7 +124,8 @@
               </option>
             </select>
           </td>
-          <td></td>
+          <td>Long-term debt plus short term debt deflated by market value of equity.</td>
+          <td>$\frac{dltt + dlc}{prcc\_f \times csho}$</td>
         </tr>
         <tr>
           <td>Non-Operating Accruals</td>
@@ -178,7 +136,8 @@
               </option>
             </select>
           </td>
-          <td></td>
+          <td>Non-Operating Accruals scaled by lagged assets.</td>
+          <td>$\frac{(ib+dp)-cfo-oacc}{at_{-1}}$</td>
         </tr>
         <tr>
           <td>CFOA</td>
@@ -189,7 +148,8 @@
               </option>
             </select>
           </td>
-          <td></td>
+          <td>Cash Flow from operating activities.</li></td>
+          <td>$\frac{oancf}{at_{-1}}$ if $fyear \ge 1987$, $\frac{fopt-oacc}{at_{-1}}$ if $fyear<1987$.</td>
         </tr>
         <tr>
           <td>Investment Cycle</td>
@@ -200,7 +160,8 @@
               </option>
             </select>
           </td>
-          <td></td>
+          <td>Depreciation expenses deflated by lagged assets.</td>
+          <td>Standard deviation of $\frac{capx}{at}$ over the past 5 years (3 years minimum).</td>
         </tr>
         <tr>
           <td>Age</td>
@@ -211,7 +172,8 @@
               </option>
             </select>
           </td>
-          <td></td>
+          <td>Age of the firm in years.</td>
+          <td>Number of years with return history on CRSP or number of years in Compustat if not available.</td>
         </tr>
         <tr>
           <td>Volatility</td>
@@ -222,7 +184,8 @@
               </option>
             </select>
           </td>
-          <td></td>
+          <td>Standard deviation of daily returns over the past year.</td>
+          <td>$std(ret_d)$ where $ret_d$ is the series of daily returns over the past 253 trading days.</td>
         </tr>
       </table>
 
@@ -237,6 +200,8 @@
       -->
 
       <button v-on:click="computeScore">Compute C Score</button>
+      <br>
+      <p>NOTE: Processing can take some time for large files. Please do not loose faith ...</p>
 
       <br>
       <p>{{ message_cscore }}</p
