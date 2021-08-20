@@ -27,6 +27,80 @@
       <h2>Download Conservatism Score</h2>
 
       Data is available in comma-separated (CSV), or parquet formats.
+      These files contain all the measures used in the paper as described
+      in the table below.
+
+      <table>
+        <tr>
+          <th>Measure</th>
+          <th>Estimate</th>
+          <th>Features set (covariates)</th>
+        </tr>
+        <tr>
+          <td>L1</td>
+          <td>Linear</td>
+          <td>Features set 1</td>
+        </tr>
+        <tr>
+          <td>L2</td>
+          <td>Linear</td>
+          <td>Features set 2</td>
+        </tr>
+        <tr>
+          <td>L1y</td>
+          <td>Linear by fiscal year</td>
+          <td>Features set 1</td>
+        </tr>
+        <tr>
+          <td>L2y</td>
+          <td>Linear by fiscal year</td>
+          <td>Features set 2</td>
+        </tr>
+        <tr>
+          <td>MLC1_mean</td>
+          <td>Average of 100 Neural Network models</td>
+          <td>Features set 1</td>
+        </tr>
+        <tr>
+          <td>MLC2_mean</td>
+          <td>Average of 100 Neural Network models</td>
+          <td>Features set 2</td>
+        </tr>
+        <tr>
+          <td>MLC1y_mean</td>
+          <td>Average of 100 Neural Network models</td>
+          <td>Features set 1 and years fixed effects</td>
+        </tr>
+        <tr>
+          <td>MLC2y_mean</td>
+          <td>Average of 100 Neural Network models</td>
+          <td>Features set 2 and years fixed effects</td>
+        </tr>
+        <tr>
+          <td>MLC1</td>
+          <td>Neural Network trained on MLC1_mean</td>
+          <td>Features set 1</td>
+        </tr>
+        <tr>
+          <td>MLC2</td>
+          <td>Neural Network trained on MLC2_mean</td>
+          <td>Features set 2</td>
+        </tr>
+        <tr>
+          <td>MLC1y</td>
+          <td>Neural Network trained on MLC1y_mean</td>
+          <td>Features set 1 and years fixed effects</td>
+        </tr>
+        <tr>
+          <td>MLC2y</td>
+          <td>Neural Network trained on MLC2y_mean</td>
+          <td>Features set 2 and years fixed effects</td>
+        </tr>
+
+      </table>
+      <p>Features set 1 includes Size, Market-to-Book ratio (M/B), Leverage and features
+      set 2 adds Non-Operating Accruals, Cashflow from Operating Activities, Investment Cycle, Firm Age.</p>
+
 
       <br>
       <br>
@@ -38,12 +112,12 @@
       <a href="data/cscores_07-06-2021.parquet"><button>Download in Parquet format</button></a>
 
       <h2>Compute the C score</h2>
+      <!--
       <p>We offer several ways to compute the C score for your research projects.</p>
 
       <h3>Packages</h3>
       <p>Python ad R packages coming soon.</p>
 
-      <!--
       <h3>Python</h3>
       <h4>Installation</h4>
       <h4>Usage</h4>
@@ -51,13 +125,13 @@
       <h3>R</h3>
       <h4>Installation</h4>
       <h4>Usage</h4>
-      -->
 
       <h3>Online</h3>
-      <p>You can also use the following utility to quickly compute the C score.</p>
+      -->
+      <p>You can use the following utility to compute the C score in your browser.</p>
 
-      <p>Note: This utility uses your browser to compute the C score and is limited
-      in the size of the file that it accepts. We suggest that you only provide
+      <p>Note: This utility uses your own compuer ressources to compute the C score and is limited
+      in the size of the file it accepts. We suggest that you only provide
       a file with the columns necessary to compute the C score.</p>
 
       <p>Select a CSV file containing the variables detailed in the table below (formulas use COMPUSTAT and CRSP variables names):<p>
@@ -210,9 +284,11 @@
       <br>
       <button v-on:click="downloadScore">Download C Score</button>
 
+      <!--
       <h2>Download the model</h2>
       You are welcome to download the tensor flow model used to compute the C score and use it at will.
       Coming soon.
+      -->
 
 
 
